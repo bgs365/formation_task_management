@@ -150,8 +150,9 @@ VALUES
 ('Concevoir la base de données', 'Concevoir les schémas nécessaires pour la gestion de projets', '2024-12-31', 3, 1, 2, 1),
 ('Développer l''interface utilisateur', 'Créer les interfaces pour l''application de gestion de tâches', '2024-12-31', 4, 2, 1, 2);
 
--- Requête pour obtenir toutes les tâches
-SELECT * FROM Taches;
+-- Requête pour obtenir toutes les tâches avec pagination
+SELECT * FROM Taches
+LIMIT 10 OFFSET 0;
 ```
 
 Exécutez le script en cliquant sur le bouton **Run** (icône en forme de triangle vert) ou en appuyant sur **Ctrl+Enter**.
@@ -223,8 +224,23 @@ public class Main {
   - Mettez à jour une tâche en utilisant son `id`.
 - **Supprimer** une tâche :
   - Supprimez une tâche en fonction de son `id`.
-- **Lister** toutes les tâches :
-  - Utilisez une requête `SELECT` pour récupérer et afficher toutes les tâches.
+- **Lister** toutes les tâches avec pagination :
+  - Utilisez une requête `SELECT` avec `LIMIT` et `OFFSET` pour récupérer et afficher les tâches par lots de 10.
+
+  Exemple :
+  ```java
+  int pageNumber = 1;
+  int pageSize = 10;
+  int offset = (pageNumber - 1) * pageSize;
+  String query = "SELECT * FROM Taches LIMIT ? OFFSET ?";
+  PreparedStatement stmt = conn.prepareStatement(query);
+  stmt.setInt(1, pageSize);
+  stmt.setInt(2, offset);
+  ResultSet rs = stmt.executeQuery();
+  while (rs.next()) {
+      System.out.println("Tâche: " + rs.getString("titre"));
+  }
+  ```
 
 ### 4. Gérer les Entrées Utilisateur
 
